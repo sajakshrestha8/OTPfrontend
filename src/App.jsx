@@ -55,7 +55,6 @@ export default function App() {
     }
   };
 
-  // Handle paste event for the entire code
   const handlePaste = (e) => {
     const paste = e.clipboardData.getData("text");
     if (/^[0-9]{6}$/.test(paste)) {
