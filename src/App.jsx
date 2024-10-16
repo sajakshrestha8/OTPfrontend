@@ -1,9 +1,10 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function App() {
-  const [code, setCode] = useState(Array(6).fill(""));
+  const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
@@ -56,11 +57,16 @@ export default function App() {
   };
 
   const handlePaste = (e) => {
+    setCode(["", "", "", "", "", ""]);
     const paste = e.clipboardData.getData("text");
-    if (/^[0-9]{6}$/.test(paste)) {
-      setCode(paste.split(""));
-      setError(false);
+    // console.log(paste);
+    if (paste.length < 6) {
+      setCode(["", "", "", "", "", ""]);
+      console.log(code);
     }
+    console.log(paste);
+    setCode(paste.split(""));
+    setError(false);
   };
 
   const handleSubmit = async () => {
@@ -78,13 +84,17 @@ export default function App() {
     );
     if (response.status === 200) {
       navigate("/success");
+      return;
+    } else {
+      setError(true);
+      return;
     }
   };
 
   return (
     <div>
       <label style={heading}>Verification Code:</label>
-      <div className="input-group" onPaste={handlePaste}>
+      <div className="input-group">
         {code.map((value, index) => (
           <input
             key={index}
@@ -93,8 +103,8 @@ export default function App() {
             maxLength="1"
             value={value}
             onChange={(e) => handleInputChange(e, index)}
-            className={error ? "error" : ""}
             style={otpInput}
+            onPaste={handlePaste}
           />
         ))}
       </div>
